@@ -1,5 +1,9 @@
 # SpotiDownloader - Project Context
 
+## Pending Setup (user hasn't done this yet)
+- [ ] Create Spotify Developer App — follow README Section 2 step-by-step
+
+
 ## What This Project Does
 Python CLI script that authenticates with the Spotify Web API (OAuth2), fetches all tracks from a private playlist, then searches YouTube for each track and downloads it as MP3 via yt-dlp.
 
