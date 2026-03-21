@@ -7,11 +7,28 @@ Download a private Spotify playlist as MP3 files. Authenticates with the Spotify
 ## Requirements
 
 - Python 3.10+
-- FFmpeg (required for MP3 conversion)
+- Node.js (required by yt-dlp-ejs for YouTube JS challenge solving)
+- FFmpeg (required by yt-dlp for MP3 conversion)
 
 ---
 
-## 1. Install FFmpeg
+## 1. Install Node.js and FFmpeg
+
+Node.js is required by yt-dlp-ejs to solve YouTube's JS challenges (anti-bot). FFmpeg is required by yt-dlp for MP3 conversion.
+
+**Windows (winget):**
+```
+winget install OpenJS.NodeJS.LTS
+```
+
+**Windows (Chocolatey):**
+```
+choco install nodejs-lts
+```
+
+**Manual:** Download from https://nodejs.org/ and install the LTS version.
+
+Then install FFmpeg:
 
 **Windows (winget):**
 ```
@@ -25,8 +42,9 @@ choco install ffmpeg
 
 **Manual:** Download from https://ffmpeg.org/download.html, extract, and add the `bin/` folder to your system PATH.
 
-Verify it works:
+Verify both are installed:
 ```
+node --version
 ffmpeg -version
 ```
 
@@ -132,11 +150,12 @@ downloads/<playlist_name>/<Artist> - <Track>.mp3
 - Make sure `http://127.0.0.1:8888/callback` is added in your Spotify app settings under Redirect URIs.
 - Make sure the value in `.env` matches exactly.
 
+**403 errors or "detected as bot"**
+- Make sure Node.js is installed and in your PATH (`node --version`).
+- Make sure `yt-dlp-ejs` is installed (`pip install yt-dlp-ejs`). It uses Node.js to solve YouTube's JS challenges.
+
 **"FFmpeg not found" error**
 - FFmpeg must be installed and available in your system PATH. Run `ffmpeg -version` to verify.
-
-**Track downloads as `.webm` or wrong format**
-- This means FFmpeg is missing. Install it and retry.
 
 **Re-authenticating**
 - Delete the `.cache` file and re-run to go through the browser login again.
