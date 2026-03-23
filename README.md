@@ -1,6 +1,6 @@
 # SpotiDownloader
 
-Download a private Spotify playlist as MP3 files. Authenticates with the Spotify Web API via OAuth2, fetches all tracks, then searches YouTube for each one and downloads it at 192 kbps with embedded metadata.
+Download a private Spotify playlist as MP3 files. Authenticates with the Spotify Web API via OAuth2, fetches all tracks, then searches YouTube Music for each one and downloads it at 192 kbps with embedded metadata.
 
 ---
 
@@ -104,13 +104,7 @@ uv sync
 
 This creates a `.venv/` virtual environment and installs all dependencies automatically.
 
-Create a `.env` file by copying the example:
-
-```bash
-cp .env.example .env
-```
-
-Open `.env` and fill in your credentials:
+Create a `.env` file in the project root with your credentials:
 
 ```
 SPOTIFY_CLIENT_ID=paste_your_client_id_here
@@ -125,10 +119,12 @@ The redirect URI must match exactly what you entered in the Spotify dashboard.
 ## 4. Run
 
 ```bash
-uv run python main.py --playlist https://open.spotify.com/playlist/YOUR_PLAYLIST_ID
+uv run python main.py --playlist https://open.spotify.com/playlist/YOUR_PLAYLIST_ID --browser opera
 ```
 
 You can pass either a full Spotify URL or just the playlist ID.
+
+> **Important:** The browser specified with `--browser` must be **closed** when running the tool, otherwise yt-dlp can't read the cookie database.
 
 **On first run:**
 - A browser tab will open asking you to log in to Spotify and grant access.
@@ -140,6 +136,9 @@ You can pass either a full Spotify URL or just the playlist ID.
 ```bash
 # Custom output directory (default: ./downloads)
 uv run python main.py --playlist <url> --output /path/to/music
+
+# Browser to extract YouTube cookies from (default: edge)
+uv run python main.py --playlist <url> --browser chrome
 ```
 
 ---
@@ -151,8 +150,9 @@ Tracks are saved to:
 downloads/<playlist_name>/<Artist> - <Track>.mp3
 ```
 
-- Already-downloaded tracks are skipped on re-runs (safe to resume).
+- Already-downloaded tracks are skipped on re-runs (safe to resume/interrupt with Ctrl+C).
 - If any track fails after 3 attempts, it is listed in `downloads/<playlist_name>/failed.txt`.
+- A 5-10 second delay is added between downloads to avoid YouTube rate limiting.
 
 ---
 
@@ -166,6 +166,7 @@ downloads/<playlist_name>/<Artist> - <Track>.mp3
 - Make sure the value in `.env` matches exactly.
 
 **403 errors or "detected as bot"**
+- Make sure the browser specified with `--browser` is **closed** before running.
 - Make sure Node.js is installed and in your PATH (`node --version`).
 - Make sure `yt-dlp-ejs` is installed (`uv sync`). It uses Node.js to solve YouTube's JS challenges.
 

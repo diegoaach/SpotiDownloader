@@ -38,17 +38,20 @@ def main() -> None:
     downloader: TrackDownloader = TrackDownloader(output_dir, browser=args.browser)
     failed: list[str] = []
 
-    for i, track in enumerate(tracks, start=1):
-        if downloader.file_exists(track):
-            print(f"[{i}/{total}] Skipping (exists): {track.display_label}")
-            continue
+    try:
+        for i, track in enumerate(tracks, start=1):
+            if downloader.file_exists(track):
+                print(f"[{i}/{total}] Skipping (exists): {track.display_label}")
+                continue
 
-        print(f"[{i}/{total}] Downloading: {track.display_label}")
-        success: bool = downloader.download(track)
+            print(f"[{i}/{total}] Downloading: {track.display_label}")
+            success: bool = downloader.download(track)
 
-        if not success:
-            print(f"  [FAILED] {track.display_label}")
-            failed.append(f"{track.artist} - {track.name}")
+            if not success:
+                print(f"  [FAILED] {track.display_label}")
+                failed.append(f"{track.artist} - {track.name}")
+    finally:
+        downloader.close()
 
     if failed:
         failed_file: str = os.path.join(output_dir, "failed.txt")
