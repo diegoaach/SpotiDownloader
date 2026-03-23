@@ -51,35 +51,7 @@ SPOTIFY_CLIENT_SECRET=...
 SPOTIFY_REDIRECT_URI=http://127.0.0.1:8888/callback
 ```
 
-## Current Issue — YouTube Download Broken (March 2026)
+## Resolved Issue — YouTube JS Runtime (March 2026)
+yt-dlp defaults to only enabling Deno as a JS runtime. Since Deno wasn't installed, no runtime was available for YouTube signature/n-challenge solving. Fixed by explicitly enabling Node.js via `'js_runtimes': {'node': {}, 'deno': {}}` in `downloader.py`.
 
-### What we tried
-1. **pytubefix** — Failed with `get_initial_function_name: could not find match for multiple` (regex breakage from YouTube updating their player JS). The `sig-nsig` fix branch also didn't work.
-2. **pytubefix with PO token** (`YouTube(url, client='WEB')`) — Same regex error, never gets to the download stage.
-3. **yt-dlp + yt-dlp-ejs** — Current approach. Cookies from browser work (`Found YouTube account cookies`), but **JS runtimes are all showing as "unavailable"** even though Node.js v22.18.0 is installed on the system.
-
-### Root cause (yt-dlp)
-From verbose debug output:
-```
-[debug] [youtube] [jsc] JS Challenge Providers: bun (unavailable), deno (unavailable), node (unavailable), quickjs (unavailable)
-WARNING: Signature solving failed
-WARNING: n challenge solving failed
-WARNING: Only images are available for download
-```
-- yt-dlp defaults to `'js_runtimes': {'deno': {}}` — only Deno enabled, not Node.js
-- Even so, ALL runtimes show "unavailable", meaning yt-dlp-ejs can't find them
-- Without a JS runtime, yt-dlp can't solve YouTube's signature/n-challenge, so no audio/video formats are extracted
-
-### Next steps to try
-1. **Check yt-dlp-ejs installation** — Run `uv run python -c "import yt_dlp_ejs; print(yt_dlp_ejs.__version__)"` to confirm it's installed and what version
-2. **Check node visibility from venv** — Run `where node` and verify it's in PATH
-3. **Explicitly enable Node.js runtime** — Add `'js_runtimes': {'node': {}, 'deno': {}}` to `_build_ydl_opts` in `downloader.py`
-4. **Try installing Deno** — yt-dlp recommends Deno as the default runtime: `winget install DenoLand.Deno`
-5. **Check yt-dlp-ejs wiki** — https://github.com/yt-dlp/yt-dlp/wiki/EJS for setup requirements
-6. **If all runtimes remain unavailable** — may need to reinstall yt-dlp-ejs or check if it requires a specific yt-dlp version
-
-### Current state of the code
-- `downloader.py` has **verbose logging ON** and **debug format listing** — remove both once downloads work
-- `downloader.py` has `--browser` support (defaults to `edge`, user uses `opera`)
-- Format selector is `bestaudio*/best`
-- Error printing in retry loop is ON (temporary)
+**Important:** The browser used for cookie extraction (`--browser` flag) must be **closed** when running the tool, otherwise yt-dlp can't copy the cookie database (PermissionError).

@@ -38,7 +38,6 @@ class SpotifyClient:
         tracks: list[Track] = []
         results: dict | None = self._sp.playlist_items(playlist_id, limit=100, market="from_token")
         while results:
-            print(f"DEBUG: page has {len(results['items'])} items")
             for item in results["items"]:
                 raw: dict | None = item.get("track") or item.get("item")
                 # print(f"DEBUG: item keys = {list(item.keys())}, track = {raw}")
