@@ -84,10 +84,25 @@ You need a free Spotify Developer account to get API credentials.
 
 **Clone or copy the project folder, then:**
 
-```bash
-# Install Python dependencies
-pip install -r requirements.txt
+Install [uv](https://docs.astral.sh/uv/getting-started/installation/) if you don't have it:
+
+**Windows (PowerShell):**
+```powershell
+powershell -ExecutionPolicy ByPass -c "irm https://astral.sh/uv/install.ps1 | iex"
 ```
+
+**Windows (winget):**
+```
+winget install astral-sh.uv
+```
+
+Then install dependencies:
+
+```bash
+uv sync
+```
+
+This creates a `.venv/` virtual environment and installs all dependencies automatically.
 
 Create a `.env` file by copying the example:
 
@@ -110,7 +125,7 @@ The redirect URI must match exactly what you entered in the Spotify dashboard.
 ## 4. Run
 
 ```bash
-python main.py --playlist https://open.spotify.com/playlist/YOUR_PLAYLIST_ID
+uv run python main.py --playlist https://open.spotify.com/playlist/YOUR_PLAYLIST_ID
 ```
 
 You can pass either a full Spotify URL or just the playlist ID.
@@ -124,7 +139,7 @@ You can pass either a full Spotify URL or just the playlist ID.
 **Optional flags:**
 ```bash
 # Custom output directory (default: ./downloads)
-python main.py --playlist <url> --output /path/to/music
+uv run python main.py --playlist <url> --output /path/to/music
 ```
 
 ---
@@ -152,7 +167,7 @@ downloads/<playlist_name>/<Artist> - <Track>.mp3
 
 **403 errors or "detected as bot"**
 - Make sure Node.js is installed and in your PATH (`node --version`).
-- Make sure `yt-dlp-ejs` is installed (`pip install yt-dlp-ejs`). It uses Node.js to solve YouTube's JS challenges.
+- Make sure `yt-dlp-ejs` is installed (`uv sync`). It uses Node.js to solve YouTube's JS challenges.
 
 **"FFmpeg not found" error**
 - FFmpeg must be installed and available in your system PATH. Run `ffmpeg -version` to verify.

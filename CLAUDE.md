@@ -9,8 +9,7 @@ Python CLI script that authenticates with the Spotify Web API (OAuth2), fetches 
 
 ## Files
 - `main.py` — Main script, all logic in one file
-- `requirements.txt` — spotipy, yt-dlp, yt-dlp-ejs, python-dotenv
-- `.env.example` — Credentials template (commit this)
+- `pyproject.toml` — Project metadata and dependencies (managed by uv)
 - `.env` — User's actual credentials (gitignored, never commit)
 - `README.md` — Full setup instructions including Spotify app creation steps
 
@@ -30,14 +29,20 @@ Python CLI script that authenticates with the Spotify Web API (OAuth2), fetches 
 
 ## CLI Usage
 ```
-python main.py --playlist <spotify_url_or_id> [--output ./downloads] [--browser opera]
+uv run python main.py --playlist <spotify_url_or_id> [--output ./downloads] [--browser opera]
 ```
+
+## Package Manager
+- This project uses **uv** — always use `uv run` to execute any Python scripts or commands (never bare `python`)
+- Install/sync dependencies: `uv sync`
+- Add a dependency: `uv add <package>`
+- Dependencies are defined in `pyproject.toml`, pinned in `uv.lock`
 
 ## Dependencies
 - Python 3.10+
 - Node.js (external, must be in PATH — required by yt-dlp-ejs for YouTube JS challenge solving)
 - FFmpeg (external, must be in PATH — required by yt-dlp for MP3 conversion)
-- pip packages: spotipy, yt-dlp, yt-dlp-ejs, python-dotenv
+- Python packages (in pyproject.toml): spotipy, yt-dlp, yt-dlp-ejs, python-dotenv
 
 ## Environment Variables (.env)
 ```
@@ -66,8 +71,8 @@ WARNING: Only images are available for download
 - Without a JS runtime, yt-dlp can't solve YouTube's signature/n-challenge, so no audio/video formats are extracted
 
 ### Next steps to try
-1. **Check yt-dlp-ejs installation** — Run `python -c "import yt_dlp_ejs; print(yt_dlp_ejs.__version__)"` in the venv to confirm it's installed and what version
-2. **Check node visibility from venv** — Run `where node` and verify it's in PATH when the venv is active
+1. **Check yt-dlp-ejs installation** — Run `uv run python -c "import yt_dlp_ejs; print(yt_dlp_ejs.__version__)"` to confirm it's installed and what version
+2. **Check node visibility from venv** — Run `where node` and verify it's in PATH
 3. **Explicitly enable Node.js runtime** — Add `'js_runtimes': {'node': {}, 'deno': {}}` to `_build_ydl_opts` in `downloader.py`
 4. **Try installing Deno** — yt-dlp recommends Deno as the default runtime: `winget install DenoLand.Deno`
 5. **Check yt-dlp-ejs wiki** — https://github.com/yt-dlp/yt-dlp/wiki/EJS for setup requirements

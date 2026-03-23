@@ -1,0 +1,12 @@
+[project]
+name = "spotidownloader"
+version = "0.1.0"
+description = "Download a private Spotify playlist as MP3 files"
+readme = "README.md"
+requires-python = ">=3.10"
+dependencies = [
+    "spotipy>=2.24.0",
+    "yt-dlp",
+    "yt-dlp-ejs",
+    "python-dotenv>=1.0.0",
+]
